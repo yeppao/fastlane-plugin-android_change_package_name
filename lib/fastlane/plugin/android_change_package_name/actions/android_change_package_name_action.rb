@@ -25,8 +25,8 @@ module Fastlane
 
           File.write(manifest, @doc.to_xml)
 
-          folder = package_name.gsub('.', '/')
-          new_folder = new_package_name.gsub('.', '/')
+          folder = originalPackageName.gsub('.', '/')
+          new_folder = packageName.gsub('.', '/')
           new_folder_path = "#{path}/app/src/main/java/#{new_folder}"
 
           FileUtils::mkdir_p new_folder_path
