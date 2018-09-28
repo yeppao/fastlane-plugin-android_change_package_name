@@ -80,7 +80,7 @@ module Fastlane
                                   description: "Path of root Android project folder",
                                   is_string: true,
                                   optional: false,
-                                  default_value: "."
+                                  default_value: ".")
         ]
       end
 
