@@ -7,19 +7,41 @@ module Fastlane
       def self.run(params)
         require 'nokogiri'
 
+        path = params[:path]
         packageName = params[:package_name]
         manifest = params[:manifest]
 
         doc = File.open(manifest) { |f|
           @doc = Nokogiri::XML(f)
 
+          originalPackageName = nil
+
           @doc.css("manifest").each do |response_node|
+            originalPackageName = response_node["package"]
             response_node["package"] = packageName
 
             UI.message("Updating package name to: #{packageName}")
           end
 
           File.write(manifest, @doc.to_xml)
+
+          folder = package_name.gsub('.', '/')
+          new_folder = new_package_name.gsub('.', '/')
+          new_folder_path = "#{path}/app/src/main/java/#{new_folder}"
+
+          FileUtils::mkdir_p new_folder_path
+
+          java_sources = Dir.glob("#{path}/app/src/main/java/#{folder}/*.java")
+          java_sources.each do |file|
+            FileUtils.mv file, new_folder_path
+          end
+
+          Bundler.with_clean_env do
+            sh "find #{path}/app/src -name '*.java' -type f -exec sed -i '' 's/#{originalPackageName}/#{packageName}/' {} \\;"
+            sh "find #{path}/app -name 'build.gradle' -type f -exec sed -i '' 's/#{originalPackageName}/#{packageName}/' {} \\;"
+          end
+
+          UI.message("#{originalPackageName} successfully updated to #{packageName}")
         }
       end
 
@@ -53,6 +75,12 @@ module Fastlane
                                   optional: false,
                                       type: String,
                              default_value: "app/src/main/AndroidManifest.xml")
+          FastlaneCore::ConfigItem.new(key: :path,
+                                  env_name: "",
+                                  description: "Path of root Android project folder",
+                                  is_string: true,
+                                  optional: false,
+                                  default_value: "."
         ]
       end
 
