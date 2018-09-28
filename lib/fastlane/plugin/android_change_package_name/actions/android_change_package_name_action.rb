@@ -74,7 +74,7 @@ module Fastlane
                                description: "Location of your project AndroidManifest.xml",
                                   optional: false,
                                       type: String,
-                             default_value: "app/src/main/AndroidManifest.xml")
+                             default_value: "app/src/main/AndroidManifest.xml"),
           FastlaneCore::ConfigItem.new(key: :path,
                                   env_name: "",
                                   description: "Path of root Android project folder",
