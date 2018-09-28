@@ -5,7 +5,22 @@ module Fastlane
   module Actions
     class AndroidChangePackageNameAction < Action
       def self.run(params)
-        UI.message("The android_change_package_name plugin is working!")
+        require 'nokogiri'
+
+        packageName = params[:package_name]
+        manifest = params[:manifest]
+
+        doc = File.open(manifest) { |f|
+          @doc = Nokogiri::XML(f)
+
+          @doc.css("manifest").each do |response_node|
+            response_node["package"] = packageName
+
+            UI.message("Updating package name to: #{packageName}")
+          end
+
+          File.write(manifest, @doc.to_xml)
+        }
       end
 
       def self.description
@@ -27,20 +42,22 @@ module Fastlane
 
       def self.available_options
         [
-          # FastlaneCore::ConfigItem.new(key: :your_option,
-          #                         env_name: "ANDROID_CHANGE_PACKAGE_NAME_YOUR_OPTION",
-          #                      description: "A description of your option",
-          #                         optional: false,
-          #                             type: String)
+          FastlaneCore::ConfigItem.new(key: :package_name,
+                                  env_name: "",
+                               description: "New package name",
+                                  optional: true,
+                                      type: String),
+          FastlaneCore::ConfigItem.new(key: :manifest,
+                                  env_name: "",
+                               description: "Location of your project AndroidManifest.xml",
+                                  optional: false,
+                                      type: String,
+                             default_value: "app/src/main/AndroidManifest.xml")
         ]
       end
 
       def self.is_supported?(platform)
-        # Adjust this if your plugin only works for a particular platform (iOS vs. Android, for example)
-        # See: https://docs.fastlane.tools/advanced/#control-configuration-by-lane-and-by-platform
-        #
-        # [:ios, :mac, :android].include?(platform)
-        true
+        platform == :android
       end
     end
   end

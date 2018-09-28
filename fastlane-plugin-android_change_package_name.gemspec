@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
   spec.email         = 'syln3o@gmail.com'
 
   spec.summary       = 'Change the package name in the AndroidManifest.xml file'
-  # spec.homepage      = "https://github.com/yeppao/fastlane-plugin-android_change_package_name"
+  spec.homepage      = "https://github.com/yeppao/fastlane-plugin-android_change_package_name"
   spec.license       = "MIT"
 
   spec.files         = Dir["lib/**/*"] + %w(README.md LICENSE)
