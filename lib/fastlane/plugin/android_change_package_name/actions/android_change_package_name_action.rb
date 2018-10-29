@@ -28,6 +28,7 @@ module Fastlane
 
             folder = originalPackageName.gsub('.', '/')
             new_folder = packageName.gsub('.', '/')
+            
             if File.exist("#{path}/app/src/main/java/#{folder}")
               sourcesPath = "/app/src"
               gradlePath = "/app"
