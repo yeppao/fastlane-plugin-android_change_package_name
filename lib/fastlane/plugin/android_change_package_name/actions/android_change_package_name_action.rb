@@ -31,16 +31,17 @@ module Fastlane
             if File.exist("#{path}/app/src/main/java/#{new_folder}")
               sourcesPath = "/app/src"
               gradlePath = "/app"
-            elsif File.exist("#{path}/src/main/java/#{new_folder}")
+              new_folder_path = "#{path}#{sourcesPath}/main/java/#{new_folder}"
+              java_sources = Dir.glob("#{path}#{sourcesPath}/main/java/#{folder}/*.java")
+            elsif File.exist("#{path}/src/#{new_folder}")
               sourcesPath = "/src"
               gradlePath "/."
+              new_folder_path = "#{path}#{sourcesPath}/#{new_folder}"
+              java_sources = Dir.glob("#{path}#{sourcesPath}/#{folder}/*.java")
             end
-
-            new_folder_path = "#{path}#{sourcesPath}/main/java/#{new_folder}"
-
+          
             FileUtils::mkdir_p new_folder_path
-
-            java_sources = Dir.glob("#{path}#{sourcesPath}/main/java/#{folder}/*.java")
+            
             java_sources.each do |file|
               FileUtils.mv file, new_folder_path
             end
