@@ -23,23 +23,31 @@ module Fastlane
             UI.message("Updating package name to: #{packageName}")
           end
 
-          if  originalPackageName != packageName
+          if originalPackageName != packageName
             File.write(manifest, @doc.to_xml)
 
             folder = originalPackageName.gsub('.', '/')
             new_folder = packageName.gsub('.', '/')
-            new_folder_path = "#{path}/app/src/main/java/#{new_folder}"
+            if File.exist("#{path}/app/src/main/java/#{new_folder}")
+              sourcesPath = "/app/src"
+              gradlePath = "/app"
+            elsif File.exist("#{path}/src/main/java/#{new_folder}")
+              sourcesPath = "/src"
+              gradlePath "/."
+            end
+
+            new_folder_path = "#{path}#{sourcesPath}/main/java/#{new_folder}"
 
             FileUtils::mkdir_p new_folder_path
 
-            java_sources = Dir.glob("#{path}/app/src/main/java/#{folder}/*.java")
+            java_sources = Dir.glob("#{path}#{sourcesPath}/main/java/#{folder}/*.java")
             java_sources.each do |file|
               FileUtils.mv file, new_folder_path
             end
 
             Bundler.with_clean_env do
-              sh "find #{path}/app/src -name '*.java' -type f -exec sed -i '' 's/#{originalPackageName}/#{packageName}/' {} \\;"
-              sh "find #{path}/app -name 'build.gradle' -type f -exec sed -i '' 's/#{originalPackageName}/#{packageName}/' {} \\;"
+              sh "find #{path}#{sourcesPath} -name '*.java' -type f -exec sed -i '' 's/#{originalPackageName}/#{packageName}/' {} \\;"
+              sh "find #{path}#{gradlePath} -name 'build.gradle' -type f -exec sed -i '' 's/#{originalPackageName}/#{packageName}/' {} \\;"
             end
           end
 
