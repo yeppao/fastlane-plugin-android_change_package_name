@@ -29,12 +29,12 @@ module Fastlane
             folder = originalPackageName.gsub('.', '/')
             new_folder = packageName.gsub('.', '/')
             
-            if File.exist("#{path}/app/src/main/java/#{folder}")
+            if File.exist?("#{path}/app/src/main/java/#{folder}")
               sourcesPath = "/app/src"
               gradlePath = "/app"
               new_folder_path = "#{path}#{sourcesPath}/main/java/#{new_folder}"
               java_sources = Dir.glob("#{path}#{sourcesPath}/main/java/#{folder}/*.java")
-            elsif File.exist("#{path}/src/#{folder}")
+            elsif File.exist?("#{path}/src/#{folder}")
               sourcesPath = "/src"
               gradlePath "/."
               new_folder_path = "#{path}#{sourcesPath}/#{new_folder}"
