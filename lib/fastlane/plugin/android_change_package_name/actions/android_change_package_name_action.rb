@@ -36,7 +36,7 @@ module Fastlane
               java_sources = Dir.glob("#{path}#{sourcesPath}/main/java/#{folder}/*.java")
             elsif File.exist?("#{path}/src/#{folder}")
               sourcesPath = "/src"
-              gradlePath "/."
+              gradlePath = "/."
               new_folder_path = "#{path}#{sourcesPath}/#{new_folder}"
               java_sources = Dir.glob("#{path}#{sourcesPath}/#{folder}/*.java")
             end
